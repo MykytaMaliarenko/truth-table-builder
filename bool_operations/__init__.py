@@ -11,7 +11,21 @@ class Operations(enum.Enum):
     PierceArrow = 6
 
 
-def execute(operation: Operations, a: bool, b: bool) -> bool:
+bool_operations = {
+    Operations.Intersection: "*",
+    Operations.Union: "v",
+}
+
+basic_funcs = {
+    Operations.Equivalence: "==",
+    Operations.SchaefferStroke: "|",
+    Operations.Implication: "->",
+    Operations.PierceArrow: "^",
+    Operations.Modulo2Sum: "+"
+}
+
+
+def execute_operation(operation: Operations, a: bool, b: bool) -> bool:
     if operation == Operations.Union:
         return a is True or b is True
     elif operation == Operations.Intersection:

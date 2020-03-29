@@ -1,0 +1,1 @@
+from builder.truth_table_builder import build_truth_table

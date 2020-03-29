@@ -11,6 +11,17 @@ class Operations(enum.Enum):
     PierceArrow = 6
 
 
+bool_operations_desc = {
+    Operations.Union: "объединение",
+    Operations.Intersection: "пересечение",
+    Operations.Equivalence: "эквивалентность",
+    Operations.Modulo2Sum: "сумма по модулю 2",
+    Operations.Implication: "импликация",
+    Operations.SchaefferStroke: "штрих Шеффера",
+    Operations.PierceArrow: "стрелка Пирса",
+}
+
+
 bool_operations = {
     Operations.Intersection: "*",
     Operations.Union: "v",

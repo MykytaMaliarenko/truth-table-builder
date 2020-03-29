@@ -12,9 +12,3 @@ def build_truth_table(bool_func: str, bool_vars: list) -> list:
         res.append(graph.execute(bool_vars_values))
 
     return res
-
-
-if __name__ == "__main__":
-    m = build_graph("".join("(x+(x => z))|(((y == z) 2 x)|(((!z & y) => x) | x))".split()))
-    g = build_truth_table(m, ["x", "y", "z"])
-    print("res")

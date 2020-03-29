@@ -27,23 +27,44 @@ def build_graph(root_bool_func: str) -> GraphNode:
             t, operation = parse_closest_operation(bool_func, sub_nodes)
             if res is None:
                 res = t
-            else:
+                continue
+            elif number_of_basic_funcs(bool_func) == 1:
+                return parse_closest_operation(bool_func, sub_nodes)[0]
+            elif t.child_a is None or t.child_b is None:
+                left_bound = 1
+
                 if t.child_a is None:
                     t.child_a = res
+                    if isinstance(t.child_a, str) and '!' in t.child_a:
+                        left_bound = 2
 
                 if t.child_b is None:
                     t.child_b = res
 
                 res = t
 
-            if len(sub_nodes) > 0:
-                delta = operation.index + operation.operation_len + (3 if t.child_a.denial or (isinstance(t.child_a, str)
-                                                                                               and "!" in t.child_a)
-                                                                     else 2)
-                sub_nodes = {index - delta if index > operation.index else index: val for index, val in sub_nodes.items()}
+                # cutting operation from bool func
+                updated_bool_funcs = bool_func[:operation.index - left_bound if operation.index > 0 else 0] + \
+                                     bool_func[operation.index + operation.operation_len + 2:]
 
-            bool_func = bool_func[:operation.index - 1 if operation.index > 0 else 0] + \
-                        bool_func[operation.index + operation.operation_len + 2:]
+            else:
+                left_bound = 1
+                if isinstance(t.child_a, str) and '!' in t.child_a:
+                    left_bound = 2
+
+                sub_nodes[operation.index - left_bound] = t
+                updated_bool_funcs = bool_func[:operation.index - left_bound if operation.index > 0 else 0] + '.' + \
+                                     bool_func[operation.index + operation.operation_len + 2:]
+
+            # updating sub nodes indexes
+            sub_nodes_after_operation = list(filter(lambda t_index: t_index > operation.index, list(sub_nodes.keys()
+                                                                                                    )))
+            if len(sub_nodes) > 0 and len(sub_nodes_after_operation) > 0:
+                delta = len(bool_func) - len(updated_bool_funcs)
+                sub_nodes = {index - delta if index in sub_nodes_after_operation else index: val for index, val in
+                             sub_nodes.items()}
+
+            bool_func = updated_bool_funcs
 
         return res
     elif num_of_funcs == 1:
@@ -52,6 +73,8 @@ def build_graph(root_bool_func: str) -> GraphNode:
         node = list(sub_nodes.values())[0]
         node.denial = True
         return node
+    elif bool_func == ".":
+        return sub_nodes[0]
 
 
 def parse_closest_operation(bool_func: str, sub_nodes: dict) -> (GraphNode, ClosestOperation):
@@ -120,5 +143,5 @@ def get_closest_operation(bool_func: str) -> ClosestOperation:
 
 
 if __name__ == "__main__":
-    m = build_graph("".join("!(!(x*y -> z) v (!x == (y ^ z )))".split()))
+    m = build_graph("".join("((x+(x->z))|((y==z)^x))|(((!zvy)->x))".split()))
     print("res")

@@ -81,3 +81,18 @@ class TestTruthTableBuilder:
     def test4(self):
         assert build_truth_table("!(!(x*y -> z) v (!x == (y ^ z)))", ["x", "y", "z"]) == [False, True, True, True,
                                                                                           True, False, False, False]
+
+    def test5(self):
+        assert build_truth_table("x*y*z*(x+y)", ["x", "y", "z"]) == [False, False, False, False, False, False, False,
+                                                                     False]
+
+    def test6(self):
+        assert build_truth_table("(x+y)->y*z", ["x", "y", "z"]) == [True, True, False, True, False, False, True, True]
+
+    def test7(self):
+        assert build_truth_table("(x+y)*z + !x * (y + z)", ["x", "y", "z"]) == [False, True, True, True, False, True,
+                                                                                False, False]
+
+    def test8(self):
+        assert build_truth_table("(!x*!y*z)v(!x*y)v(!x*!z)", ["x", "y", "z"]) == [True, False, True, True, False, False,
+                                                                                  False, False]
